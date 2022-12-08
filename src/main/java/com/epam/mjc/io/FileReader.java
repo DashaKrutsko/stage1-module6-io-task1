@@ -19,34 +19,32 @@ public class FileReader {
             Long phone = 0L;
             byte[] bytes = fileInputStream.readAllBytes();
             String string = new String(bytes);
+
             String[] strings = string.split("\r\n");
             for (String str : strings) {
-                int indexName = str.indexOf("Name:");
-                int indexAge = str.indexOf("Age:");
-                int indexEmail = str.indexOf("Email:");
-                int indexPhone = str.indexOf("Phone:");
+                String[] keyValue = str.split(": ");
 
-                if (indexName >= 0) {
-                    name = str.substring(indexName + 6);
-                }
-                if (indexAge >= 0) {
-                    age = Integer.parseInt(str.substring(indexAge + 5));
-                }
-                if (indexEmail >= 0) {
-                    email = str.substring(indexEmail + 7);
-                }
-                if (indexPhone >= 0) {
-                    phone = Long.parseLong(str.substring(indexPhone + 7));
+                switch (keyValue[0]) {
+                    case "Name":
+                        name = keyValue[1];
+                        break;
+                    case "Age":
+                        age = Integer.parseInt(keyValue[1]);
+                        break;
+                    case "Email":
+                        email = keyValue[1];
+                        break;
+                    case "Phone":
+                        phone = Long.parseLong(keyValue[1]);
+                        break;
                 }
             }
-
             return new Profile(name, age, email, phone);
-
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            System.out.println("No file");
             return null;
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("IO exception");
             return null;
         }
     }
@@ -54,6 +52,5 @@ public class FileReader {
     public static void main(String[] args) {
         File file = new File(path);
         getDataFromFile(file);
-
     }
 }
