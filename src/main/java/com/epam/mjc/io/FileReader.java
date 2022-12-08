@@ -1,62 +1,48 @@
 package com.epam.mjc.io;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
 
 
 public class FileReader {
-    static String directory = System.getProperty("user.dir") + "\\src\\main\\resources";
-    static String fileName = "Profile.txt";
-    static String path = directory + File.separator + fileName;
-
+    public static void main(String[] args) {
+        String directory = System.getProperty("user.dir") + "\\src\\main\\resources";
+        String fileName = "Profile.txt";
+        String path = directory + File.separator + fileName;
+        getDataFromFile(new File(path));
+    }
 
     public static Profile getDataFromFile(File file) {
-        //    Profile profile = new Profile();
-        try (BufferedReader bufferedReader = new BufferedReader(new java.io.FileReader(path))) {
-            String name = "";
-            Integer age = 0;
-            String email = "";
-            Long phone = 0L;
-
+        Profile profile = new Profile();
+        try {
+            BufferedReader reader = new BufferedReader(new java.io.FileReader(file));
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
-
-             //  System.out.println(line);
+            while ((line = reader.readLine()) != null) {
                 String[] keyValue = line.split(": ");
                 String value = keyValue[1].trim();
-                System.out.println(keyValue[0]);
-                System.out.println(value);
                 switch (keyValue[0].trim()) {
                     case "Name":
-                        name = value;
+                        profile.setName(value);
                         break;
                     case "Age":
-                        age = Integer.parseInt(value);
+                        profile.setAge(Integer.parseInt(value));
                         break;
                     case "Email":
-                        email = value;
+                        profile.setEmail(value);
                         break;
                     case "Phone":
-                        phone = Long.parseLong(value);
+                        profile.setPhone(Long.parseLong(value));
                         break;
                     default:
                         break;
                 }
-
             }
-            bufferedReader.close();
-            return new Profile(name, age, email, phone);
-        } catch (FileNotFoundException e) {
-            System.out.println("No file");
-            return null;
+            reader.close();
+            return profile;
         } catch (IOException e) {
-            System.out.println("IO exception");
-            return null;
+            e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        File file = new File(path);
-        Profile p = getDataFromFile(file);
-      //  System.out.println(p);
+        return profile;
     }
 }
