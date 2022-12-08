@@ -15,8 +15,7 @@ public class FileReader {
 
     public static Profile getDataFromFile(File file) {
         Profile profile = new Profile();
-        try {
-            BufferedReader reader = new BufferedReader(new java.io.FileReader(file));
+        try (BufferedReader reader = new BufferedReader(new java.io.FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] keyValue = line.split(": ");
@@ -38,8 +37,6 @@ public class FileReader {
                         break;
                 }
             }
-            reader.close();
-            return profile;
         } catch (IOException e) {
             e.printStackTrace();
         }
