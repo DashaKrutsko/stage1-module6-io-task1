@@ -1,9 +1,6 @@
 package com.epam.mjc.io;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 
 public class FileReader {
@@ -11,34 +8,42 @@ public class FileReader {
     static String fileName = "Profile.txt";
     static String path = directory + File.separator + fileName;
 
+
     public static Profile getDataFromFile(File file) {
-        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+        //    Profile profile = new Profile();
+        try (BufferedReader bufferedReader = new BufferedReader(new java.io.FileReader(path))) {
             String name = "";
             Integer age = 0;
             String email = "";
             Long phone = 0L;
-            byte[] bytes = fileInputStream.readAllBytes();
-            String string = new String(bytes);
 
-            String[] strings = string.split("\r\n");
-            for (String str : strings) {
-                String[] keyValue = str.split(": ");
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
 
-                switch (keyValue[0]) {
+             //  System.out.println(line);
+                String[] keyValue = line.split(": ");
+                String value = keyValue[1].trim();
+                System.out.println(keyValue[0]);
+                System.out.println(value);
+                switch (keyValue[0].trim()) {
                     case "Name":
-                        name = keyValue[1];
+                        name = value;
                         break;
                     case "Age":
-                        age = Integer.parseInt(keyValue[1]);
+                        age = Integer.parseInt(value);
                         break;
                     case "Email":
-                        email = keyValue[1];
+                        email = value;
                         break;
                     case "Phone":
-                        phone = Long.parseLong(keyValue[1]);
+                        phone = Long.parseLong(value);
+                        break;
+                    default:
                         break;
                 }
+
             }
+            bufferedReader.close();
             return new Profile(name, age, email, phone);
         } catch (FileNotFoundException e) {
             System.out.println("No file");
@@ -51,6 +56,7 @@ public class FileReader {
 
     public static void main(String[] args) {
         File file = new File(path);
-        getDataFromFile(file);
+        Profile p = getDataFromFile(file);
+      //  System.out.println(p);
     }
 }
